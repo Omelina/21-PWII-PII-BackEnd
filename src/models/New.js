@@ -7,6 +7,7 @@ const NewsSchema = new Schema({
 	title: { type: String, required: true },
 	description: { type: String},
 	permanlink: { type: String, required: true },
+	category: { type: Array},
 	status: { type: Boolean, default: true },
 	date: { type: Date, required: true },
 	resource_id: { type: Object, required: true },
