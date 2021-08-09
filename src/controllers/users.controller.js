@@ -34,7 +34,8 @@ usersCtrl.singup = async (req, res) => {
 				firstName,
 				lastName,
 				email,
-				password
+				password,
+				status: false
 			});
 			newUser.role = "client";
 			newUser.password = await newUser.encryptPassword(password)
@@ -42,6 +43,11 @@ usersCtrl.singup = async (req, res) => {
 			res.send({type_msg: 'success', description: 'You are registered.'});
 		}
 	}
+};
+
+usersCtrl.activate = (req, res) => {
+	
+	res.send({type_msg: 'success', description: 'You are logout.'});
 };
 
 /**
@@ -64,6 +70,16 @@ usersCtrl.singin = async (req, res, next) => {
 		});
 	})(req, res, next);
 }
+
+usersCtrl.twoFactorAuth = (req, res) => {
+	
+	res.send({type_msg: 'success', description: 'You are logout.'});
+};
+
+usersCtrl.emailLogin = (req, res) => {
+	
+	res.send({type_msg: 'success', description: 'You are logout.'});
+};
 
 /**
  * Metodo para cerrar sesión 
