@@ -7,6 +7,7 @@ const methodOverride = require('method-override');
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
+const { verifyToken } = require('./libs/verifyToken');
 
 
 // Initializations
@@ -54,8 +55,9 @@ app.use((req, res, next) => {
 
 // Routes
 app.use(require('./routes/index.routes'));
-app.use(require('./routes/roles.routes'));
 app.use(require('./routes/users.routes'));
+app.use(verifyToken);
+app.use(require('./routes/roles.routes'));
 app.use(require('./routes/categories.routes'));
 app.use(require('./routes/resources.routes'));
 app.use(require('./routes/news.routes'));

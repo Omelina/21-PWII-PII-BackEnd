@@ -3,7 +3,6 @@ const router = Router();
 
 const { getCategories, createCategory, getCategory, deleteCategory, updateCategory } = require('../controllers/categories.controller');
 
-const {isAuthenticated} = require('../helpers/auth');
 
 /**
  * ruta para llamar al metodo que carga todas las categorías 

@@ -3,7 +3,6 @@ const router = Router();
 
 const { createResource, getResources, updateResource, deleteResource, getResource } = require('../controllers/resources.controller');
 
-const {isAuthenticated} = require('../helpers/auth');
 /**
  * ruta que llama el metodo para crear un nuevo recurso
  */

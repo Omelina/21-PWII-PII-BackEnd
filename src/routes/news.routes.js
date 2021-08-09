@@ -3,7 +3,6 @@ const router = Router();
 
 const { getNews, createNews, getNew, deleteNews } = require('../controllers/news.controller');
 
-const {isAuthenticated} = require('../helpers/auth');
 
 /**
  * ruta que llama el metodo para crear una nueva noticia

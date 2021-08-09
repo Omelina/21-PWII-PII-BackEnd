@@ -1,5 +1,8 @@
 const User = require('../models/User');
 const Role = require('../models/Role');
+const jwt = require('jsonwebtoken');
+const { SECRET_CODE } = process.env;
+const config = require('../config');
 
 const passport = require('passport');
 
@@ -52,7 +55,12 @@ usersCtrl.singin = async (req, res, next) => {
 		if (err) { return next(err); }
 		req.logIn(user, function(err) {
 			if (err) { return res.send({type_msg: 'failed', description: 'Login failed'}) }
-				return res.send({type_msg: 'success', description: user.id});
+				const token = jwt.sign({id: user._id, role: user.role}, config.SECRET_CODE, {
+					expiresIn: 60 * 60 * 24,
+				});
+				return res.json({ auth: true, token });
+				// return res.send({user});
+				// return res.send({type_msg: 'success', description: user.id});
 		});
 	})(req, res, next);
 }
@@ -64,6 +72,7 @@ usersCtrl.singin = async (req, res, next) => {
  */
 usersCtrl.logout = (req, res) => {
 	req.logout();
+	res.status(200).send({ auth: false, token: null });
 	res.send({type_msg: 'success', description: 'You are logout.'});
 };
 
