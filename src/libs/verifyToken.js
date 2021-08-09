@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const { token } = require('morgan');
 const config = require('../config');
 
 const tokenCtrl = {};
