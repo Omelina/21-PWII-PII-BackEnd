@@ -37,7 +37,7 @@ newsCtrl.createNews = async (body) => {
                 title: item.title,
                 description: item.content,
                 permanlink: item.link,
-                category: item.categories,
+                category: item.categories[0],
                 date: item.pubDate,
                 resource_id: body.resource_id,
                 user_id: body.user,
