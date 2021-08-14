@@ -1,6 +1,5 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const Role = require('../models/Role');
 const User = require('../models/User');
 
 passport.use(new LocalStrategy({
@@ -11,15 +10,18 @@ passport.use(new LocalStrategy({
 	// Match Email's user
 	const user = await User.findOne({email});
 	if (!user) {
-		return done(null, false, {message: 'Not user Found'});
+		return done(null, false, 'Not user Found');
 	} else {
-		// Match password's user
-		const match = await user.matchPassword(password);
-		if (match) {
-			return done(null, user);
-		} else {
-			return done(null, false, {message: 'Incorrect password'});
+		if(user.status){
+			// Match password's user
+			const match = await user.matchPassword(password);
+			if (match) {
+				return done(null, user);
+			} else {
+				return done(null, false, 'Incorrect password');
+			}
 		}
+		return done(null, false, 'Account is not confirm');
 	}
 }));
 

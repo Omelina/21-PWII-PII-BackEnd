@@ -1,8 +1,7 @@
 const User = require('../models/User');
-const Role = require('../models/Role');
 const jwt = require('jsonwebtoken');
-const { SECRET_CODE } = process.env;
 const config = require('../config');
+const mail = require('../config/mail');
 
 const passport = require('passport');
 
@@ -39,15 +38,22 @@ usersCtrl.singup = async (req, res) => {
 			});
 			newUser.role = "client";
 			newUser.password = await newUser.encryptPassword(password)
-			await newUser.save();
+			const user = await newUser.save();
+			mail.sendMailConfirmAccount(user);
 			res.send({type_msg: 'success', description: 'You are registered.'});
 		}
 	}
 };
 
-usersCtrl.activate = (req, res) => {
-	
-	res.send({type_msg: 'success', description: 'You are logout.'});
+/**
+ * Metodo para activar la cuenta de usuario
+ * @param {solicita metodo de activacion de cuenta} req 
+ * @param {devuelve mensaje de exito} res 
+ */
+usersCtrl.activate = async (req, res) => {
+	const status = true;
+	await User.findByIdAndUpdate(req.params.id, {status})
+	res.send({type_msg: 'success', description: 'Your account is confirm.'});
 };
 
 /**
@@ -60,25 +66,52 @@ usersCtrl.singin = async (req, res, next) => {
 	passport.authenticate('local', function(err, user, info){
 		if (err) { return next(err); }
 		req.logIn(user, function(err) {
-			if (err) { return res.send({type_msg: 'failed', description: 'Login failed'}) }
+			if (err) { return res.send({type_msg: 'failed', description: info}) }
 				const token = jwt.sign({id: user._id, role: user.role}, config.SECRET_CODE, {
 					expiresIn: 60 * 60 * 24,
 				});
 				return res.json({ auth: true, token });
-				// return res.send({user});
-				// return res.send({type_msg: 'success', description: user.id});
 		});
 	})(req, res, next);
 }
 
+/**
+ * Metodo para login por autenticacion de dos factores
+ * @param {solicita el metodo de 2FT} req 
+ * @param {devuelve un mensaje  o un JWT} res 
+ */
 usersCtrl.twoFactorAuth = (req, res) => {
-	
+
 	res.send({type_msg: 'success', description: 'You are logout.'});
 };
 
-usersCtrl.emailLogin = (req, res) => {
-	
-	res.send({type_msg: 'success', description: 'You are logout.'});
+/**
+ * Metodo para enviar correo para login
+ * @param {solicita el metodo de envio de correo para login} req 
+ * @param {devuelve un mensaje} res 
+ */
+usersCtrl.sendEmailLogin = async (req, res) => {
+	const { email } = req.body;
+	const user = await User.findOne({email});
+	mail.sendMailLogin(user);
+	es.send({type_msg: 'success', description: 'Mail send.'});
+};
+
+/**
+ * Metodo para login por correo
+ * @param {solicita el metodo de login por correo} req 
+ * @param {devuelve un mensaje o un JWT} res 
+ * @returns 
+ */
+usersCtrl.emailLogin = async (req, res) => {
+	const user = await User.findById(req.params.id);
+	if(user.status){
+		const token = jwt.sign({id: user._id, role: user.role}, config.SECRET_CODE, {
+			expiresIn: 60 * 60 * 24,
+		});
+		return res.json({ auth: true, token });
+	}
+	return res.send({type_msg: 'failed', description: 'Account is not confirm.'});
 };
 
 /**
