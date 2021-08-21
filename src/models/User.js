@@ -10,7 +10,8 @@ const UserSchema = new Schema({
 	lastName: { type: String, required: true },
 	password: { type: String, required: true },
 	status: { type: Boolean, default: true },
-	role: { type: String, required: true }
+	role: { type: String, required: true },
+	tft: { type: String }
 }, {
 	timestamps: true
 });

@@ -2,6 +2,7 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 const mail = require('../config/mail');
+const sms = require('../config/sms');
 
 const passport = require('passport');
 
@@ -67,10 +68,8 @@ usersCtrl.singin = async (req, res, next) => {
 		if (err) { return next(err); }
 		req.logIn(user, function(err) {
 			if (err) { return res.send({type_msg: 'failed', description: info}) }
-				const token = jwt.sign({id: user._id, role: user.role}, config.SECRET_CODE, {
-					expiresIn: 60 * 60 * 24,
-				});
-				return res.json({ auth: true, token });
+			usersCtrl.sendTFT(user._id);
+			res.send({type_msg: 'success', description: '2FT'});
 		});
 	})(req, res, next);
 }
@@ -80,10 +79,33 @@ usersCtrl.singin = async (req, res, next) => {
  * @param {solicita el metodo de 2FT} req 
  * @param {devuelve un mensaje  o un JWT} res 
  */
-usersCtrl.twoFactorAuth = (req, res) => {
-
-	res.send({type_msg: 'success', description: 'You are logout.'});
+usersCtrl.twoFactorAuth = async (req, res) => {
+	const { tft } = req.body;
+	const user = await User.findById(req.params.id);
+	if(user.tft === tft){
+		const token = jwt.sign({id: user._id, role: user.role}, config.SECRET_CODE, {
+			expiresIn: 60 * 60 * 24,
+		});
+		return res.json({ auth: true, token });
+	} else {
+		res.send({type_msg: 'failed', description: '2FT code incorrect.'});
+	}
 };
+
+/**
+ * Genera el codigo de 2FT y lo envia
+ * @param {identificador del usuario} id 
+ */
+usersCtrl.sendTFT = async (id) => {
+	const user = await User.findById(id);
+	txt1 = user.firstName.slice(-2);
+	txt2 = user.lastName.slice(-2);
+	nr1 = Math.floor(Math.random() * 10);
+	nr2 = Math.floor(Math.random() * 10);
+	tft = txt1+txt2+nr1+nr2;
+	await User.findByIdAndUpdate(id, {tft})
+	sms.sendSMS(tft);
+}
 
 /**
  * Metodo para enviar correo para login
@@ -94,7 +116,7 @@ usersCtrl.sendEmailLogin = async (req, res) => {
 	const { email } = req.body;
 	const user = await User.findOne({email});
 	mail.sendMailLogin(user);
-	es.send({type_msg: 'success', description: 'Mail send.'});
+	res.send({type_msg: 'success', description: 'Mail send.'});
 };
 
 /**
