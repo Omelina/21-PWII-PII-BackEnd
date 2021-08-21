@@ -1,3 +1,4 @@
+const { NOTES_APP_EMAIL, NOTES_APP_EMAIL_PASS } = process.env;
 const nodemailer = require('nodemailer');
 
 const createTrans = () => {
@@ -5,8 +6,8 @@ const createTrans = () => {
 		host: 'smtp.googlemail.com',
 		port:465,
 		auth: {
-			user: "lvras.test@gmail.com",
-			pass: "lcgLCG1990"
+			user: NOTES_APP_EMAIL,
+			pass: NOTES_APP_EMAIL_PASS
 		}
 	});
 	return transport;

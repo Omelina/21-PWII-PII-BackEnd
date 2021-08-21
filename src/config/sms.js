@@ -1,14 +1,15 @@
+const { NOTES_APP_SMS_TOKEN, NOTES_APP_SMS_SID, NOTES_APP_SMS_PHONE } = process.env;
 const twilio = require('twilio');
 
-const accountSid = 'AC16160de6267d1b7458b40b4f43433064';
-const authToken = '129ec44aae312136620d69ecef3eb65b';
+const accountSid = NOTES_APP_SMS_SID;
+const authToken = NOTES_APP_SMS_TOKEN;
 
 const client = new twilio(accountSid, authToken);
 
 const createSMS = (code) => {
 	client.messages.create({
 		body: `Your 2FT code is ${code}`,
-		to:'+50686714190',
+		to:NOTES_APP_SMS_PHONE,
 		from: '+18647772948'
 	}).then((message) => console.log(`SMS ==> ENVIADO`, message.sid));
 }
