@@ -131,7 +131,7 @@ usersCtrl.emailLogin = async (req, res) => {
 		const token = jwt.sign({id: user._id, role: user.role}, config.SECRET_CODE, {
 			expiresIn: 60 * 60 * 24,
 		});
-		return res.json({ auth: true, token });
+		return res.json({ auth: true, token, user });
 	}
 	return res.send({type_msg: 'failed', description: 'Account is not confirm.'});
 };
