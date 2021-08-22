@@ -81,12 +81,12 @@ usersCtrl.singin = async (req, res, next) => {
  */
 usersCtrl.twoFactorAuth = async (req, res) => {
 	const { tft } = req.body;
-	const user = await User.findById(req.params.id);
-	if(user.tft === tft){
+	const user = await User.findOne({tft});
+	if(user != null){
 		const token = jwt.sign({id: user._id, role: user.role}, config.SECRET_CODE, {
 			expiresIn: 60 * 60 * 24,
 		});
-		return res.json({ auth: true, token });
+		return res.json({ auth: true, token, user });
 	} else {
 		res.send({type_msg: 'failed', description: '2FT code incorrect.'});
 	}

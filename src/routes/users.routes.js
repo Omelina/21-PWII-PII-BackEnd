@@ -21,7 +21,7 @@ router.get("/users/logout", logout);
 /**
  * ruta que llama el metodo para autenticarse por dos factores
  */
-router.post("/TFT/:id", twoFactorAuth);
+router.post("/tft", twoFactorAuth);
 
 /**
  * ruta que llama el metodo para enviar correo para login

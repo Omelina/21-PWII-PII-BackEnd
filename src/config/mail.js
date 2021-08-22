@@ -24,7 +24,7 @@ mailCtrl.sendMailConfirmAccount = async (user) => {
 		html: `<h1>News Cover</h1>
 		<h4>Welcome to News Cover page</h4>
 		<h4>This mail is for confirm your account</h4>
-		<a href="http://localhost:3000/activate/${user._id}" >Confirm Account</a>`
+		<a href="http://localhost:4200/activate/${user._id}" >Confirm Account</a>`
 	});
 	return
 }
@@ -38,7 +38,7 @@ mailCtrl.sendMailLogin = async (user) => {
 		html: `<h1>News Cover</h1>
 		<h4>Welcome to News Cover page</h4>
 		<h4>This email is for the login process</h4>
-		<a href="http://localhost:3000/emailLogin/${user._id}" >Login</a>`
+		<a href="http://localhost:4200/checkEmail/${user._id}" >Login</a>`
 	});
 	return
 }
