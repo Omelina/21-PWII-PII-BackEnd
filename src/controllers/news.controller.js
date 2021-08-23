@@ -35,7 +35,7 @@ newsCtrl.createNews = async (body) => {
         if(count <= 11){
             const news = {
                 title: item.title,
-                description: item.content,
+                description: item.content.substring(0,200),
                 permanlink: item.link,
                 category: item.categories[0],
                 date: item.pubDate,
